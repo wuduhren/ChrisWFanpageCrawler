@@ -1,52 +1,59 @@
 var fanPageName = '知識王'
-var conversationBlockScrollRepeat = 5
-var conversationID = 1 //Starting conversation point
+var conversationBlockScrollRepeat = 3
+var conversationID = 1
 var conversationJSON = {}
 
 //-------------------------------------------Main------------------------------------------
 
-function clickIteration() {
-
-	if (conversationID > 1000){ return } //Safty - conversationID ending point
+function clickIteration(conversationStartingPoint, conversationEndingPoint, conversationCellClickedAwaitedTimeInSecond) {
+	if (conversationID > conversationEndingPoint) { return } //Safty - conversationID ending point
 
 	if (!conversationCell(conversationID)){
 		var scrollable = document.querySelector('#u_0_b > div > div > div > div._10ua > table > tbody > tr > td._10uf._1-9p._51m-.vTop > div > div > div:nth-child(1) > div._5nbb.uiScrollableArea.fade > div.uiScrollableAreaWrap.scrollable')
 		scrollable.scrollTop = scrollable.scrollHeight
 
 		setTimeout(function() {
-			clickIteration(conversationID)
+			clickIteration(conversationStartingPoint, conversationEndingPoint, conversationCellClickedAwaitedTimeInSecond)
 		}, 3000)
 
 	} else {
+
+		if (conversationID < conversationStartingPoint) {
+			conversationID++
+			clickIteration(conversationStartingPoint, conversationEndingPoint, conversationCellClickedAwaitedTimeInSecond)
+			return
+		}
+		console.log("conversationID: " + conversationID)
+		conversationCell(conversationID).scrollIntoView()
 		conversationCell(conversationID).click()
 		setTimeout(function() {
-			scrollToTop(function() {
+			scrollToTop(function(){
 				var threadID = getHTMLData()['threadid']
+				console.log('threadid: ' + threadID)
 				conversationJSON[threadID] = conversationCrawled()
 				conversationID++
-				clickIteration(conversationID)
+				clickIteration(conversationStartingPoint, conversationEndingPoint, conversationCellClickedAwaitedTimeInSecond)
 			})
-		}, 1000)}
+		}, conversationCellClickedAwaitedTimeInSecond * 1000)
+	}
 }
 
 function conversationCrawled(){
 	var i = 0
 	var conversation = []
 	
-	while (messageCrawled(i)) {
+	while (nextMessageExist(i)) {
 		conversation.push(messageCrawled(i))
 		i++
 	}
+	// console.log(JSON.stringify(conversation))
 	return conversation
 }
 
 
 function messageCrawled(i){
+	console.log('i: ' + i)
 	
-	if (typeof document.querySelectorAll('#js_1 > div > div.clearfix')[i] === typeof undefined){ 
-		return false 
-	}
-
 	var message = {}
 	var messagePakage = document.querySelectorAll('#js_1 > div > div.clearfix')[i]
 	var messageContent = getMessageContent(messagePakage)
@@ -55,13 +62,13 @@ function messageCrawled(i){
 	var messageType = 'text'
 
 	if (messageSender == fanPageName){
-		timeSent = messagePakage.querySelector('div._41ud > div.clearfix > div._3058').getAttribute('data-tooltip-content')
-
+		timeSent = getAttribute(messagePakage.querySelector('div._41ud > div.clearfix > div._3058'), 'data-tooltip-content')
 		messageSender = getHTMLData()['business_id']
 
 		if (messageContent == '') {
 			messageContent = findImageURLFromFanpage(messagePakage)
-			timeSent = messagePakage.querySelector('div._41ud > div.clearfix > div._3058 > div').getAttribute('data-tooltip-content')
+			timeSent = getAttribute(messagePakage.querySelector('div._41ud > div.clearfix > div._3058 > div'), 'data-tooltip-content')
+
 			if (messageContent == '(y)') { 
 				messageType = 'thumbsup' 
 			} else {
@@ -70,9 +77,8 @@ function messageCrawled(i){
 		}
 	} else {
 		//User
-		timeSent = messagePakage.querySelector('div._1t_q > div._4ldz').getAttribute('data-tooltip-content')
+		timeSent = getAttribute(messagePakage.querySelector('div._1t_q > div._4ldz'), 'data-tooltip-content')
 		timeSent = timeSent.replace(messageSender, "")
-
 		messageSender = getUserFBID()
 
 		if (messageContent == '') {
@@ -85,10 +91,10 @@ function messageCrawled(i){
 		}
 	}
 
-	message['messageSender'] = messageSender
-	message['messageContent'] = messageContent
-	message['messageType'] = messageType
-	message['timeSent'] = isoTime(timeSent)
+	message['messageSender'] = checkIfNull(messageSender, 'messageSender')
+	message['messageContent'] = checkIfNull(messageContent, 'messageContent')
+	message['messageType'] = checkIfNull(messageType, 'messageType')
+	message['timeSent'] = isoTime(checkIfNull(timeSent, 'timeSent'))
 
 	return message
 }
@@ -116,8 +122,15 @@ function scrollToTop(callback){
 	}, 1000)
 }
 
+function nextMessageExist(i){
+	if (typeof document.querySelectorAll('#js_1 > div > div.clearfix')[i] === typeof undefined){
+		return false
+	} else {
+		return true
+	}
+}
+
 function conversationCell(conversationID){
-	
 	var selector = "#u_0_b > div > div > div > div._10ua > table > tbody > tr > td._10uf._1-9p._51m-.vTop > div > div > div:nth-child(1) > div._5nbb.uiScrollableArea.fade.contentAfter > div.uiScrollableAreaWrap.scrollable > div > div > ul > li:nth-child(" + conversationID + ")"
 	if (document.querySelector(selector)){
 		return document.querySelector(selector)
@@ -146,7 +159,7 @@ function findImageURLFromFanpage(messagePakage){
 
 	if (messagePakage.querySelector('div._41ud > div.clearfix > div._3058 > div > div._2poz') != null){
 		var baseURL = 'www.facebook.com'
-		var styleString = messagePakage.querySelector('div._41ud > div.clearfix > div._3058 > div > div._2poz').getAttribute('style')
+		var styleString = getAttribute(messagePakage.querySelector('div._41ud > div.clearfix > div._3058 > div > div._2poz'), 'style')
 		var url = styleString.substring(styleString.indexOf("url(") + 5, styleString.indexOf(");"))
 		return baseURL + url
 	} else {
@@ -162,7 +175,7 @@ function findImageURLFromUser(messagePakage){
 
 	if (messagePakage.querySelector('div._41ud > div.clearfix > div._3058 > div._2poz') != null){
 		var baseURL = 'www.facebook.com'
-		var styleString = messagePakage.querySelector('div._41ud > div.clearfix > div._3058 > div._2poz').getAttribute('style')
+		var styleString = getAttribute(messagePakage.querySelector('div._41ud > div.clearfix > div._3058 > div._2poz'), 'style')
 		var url = styleString.substring(styleString.indexOf("url(") + 5, styleString.indexOf(");"))
 		return baseURL + url
 	} else {
@@ -219,7 +232,25 @@ function isoTime(timeSent){
 	return timeSent
 }
 
+function checkIfNull(object, name){
+	if (object == null){
+		return 'error - could not get' + name
+	}
+	return object
+}
+
+function getAttribute(element, attribute){
+	if (element == null){
+		return 'error - counld not get element'
+	}
+	if (element.hasAttribute(attribute)){
+		return element.getAttribute(attribute)
+	} else {
+		return 'error - counld not get element'
+	}
+}
+
 //---------------------------------------------------------------------------------------------
 
-clickIteration()
+// clickIteration()
 console.log(JSON.stringify(conversationJSON))
