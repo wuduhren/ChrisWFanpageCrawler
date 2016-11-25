@@ -1,16 +1,17 @@
 var fanPageName = '知識王'
-var conversationBlockScrollRepeat = 3
+var conversationBlockScrollRepeat
 var conversationID = 1
 var conversationJSON = {}
 
 //-------------------------------------------Main------------------------------------------
 
 function clickIteration(conversationStartingPoint, conversationEndingPoint, conversationCellClickedAwaitedTimeInSecond) {
-	if (conversationID > conversationEndingPoint) { return } //Safty - conversationID ending point
+	if (conversationID > conversationEndingPoint) { return } //conversationID ending point
+	conversationBlockScrollRepeat = 3  //Scroll Repeat 
 
 	if (!conversationCell(conversationID)){
-		var scrollable = document.querySelector('#u_0_b > div > div > div > div._10ua > table > tbody > tr > td._10uf._1-9p._51m-.vTop > div > div > div:nth-child(1) > div._5nbb.uiScrollableArea.fade > div.uiScrollableAreaWrap.scrollable')
-		scrollable.scrollTop = scrollable.scrollHeight
+		var conversationScrollable = document.querySelector('#u_0_b > div > div > div > div._10ua > table > tbody > tr > td._10uf._1-9p._51m-.vTop > div > div > div:nth-child(1) > div._5nbb.uiScrollableArea.fade > div.uiScrollableAreaWrap.scrollable')
+		conversationScrollable.scrollTop = conversationScrollable.scrollHeight
 
 		setTimeout(function() {
 			clickIteration(conversationStartingPoint, conversationEndingPoint, conversationCellClickedAwaitedTimeInSecond)
@@ -103,23 +104,22 @@ function messageCrawled(i){
 //-------------------------------------------Utilities------------------------------------------
 
 function scrollToTop(callback){
-	// console.log(conversationBlockScrollRepeat)
+	var messageScrollable = document.querySelector('#u_0_b > div > div > div > div._10ua > table > tbody > tr > td._10ug._51mw._51m-.vTop > div > div > table > tbody > tr > td._2utc._51m-.vTop > div._11y7.uiScrollableArea.nofade.contentBefore > div.uiScrollableAreaWrap.scrollable')
 	if (conversationBlockScrollRepeat < 1) {
 		callback()
 		return 
 	}
 
-	if (document.querySelector('#u_0_b > div > div > div > div._10ua > table > tbody > tr > td._10ug._51mw._51m-.vTop > div > div > table > tbody > tr > td._2utc._51m-.vTop > div._11y7.uiScrollableArea.nofade.contentBefore > div.uiScrollableAreaWrap.scrollable') == null){ 
+	if (messageScrollable == null){ 
 		callback()
 		return 
 	}
 
-	var conversationScrollable = document.querySelector('#u_0_b > div > div > div > div._10ua > table > tbody > tr > td._10ug._51mw._51m-.vTop > div > div > table > tbody > tr > td._2utc._51m-.vTop > div._11y7.uiScrollableArea.nofade.contentBefore > div.uiScrollableAreaWrap.scrollable')
-	conversationScrollable.scrollTop = -conversationScrollable.scrollHeight
+	messageScrollable.scrollTop = -messageScrollable.scrollHeight
 	conversationBlockScrollRepeat--
 	setTimeout(function() {
 		scrollToTop(callback)
-	}, 1000)
+	}, 1000) //Scroll and wait one second for message to load
 }
 
 function nextMessageExist(i){
@@ -253,5 +253,5 @@ function getAttribute(element, attribute){
 
 //---------------------------------------------------------------------------------------------
 
-// clickIteration()
+// clickIteration(1, 10, 2)
 console.log(JSON.stringify(conversationJSON))
