@@ -44,7 +44,6 @@ Run`clickIteration(10, 50, 2.5)`
 In conversationJSON: 
 	{threadID:ConversationArray}
 ![Imgur](http://i.imgur.com/XV9kI3I.png )
-<img src="http://i.imgur.com/XV9kI3I.png" width="48">
 In ConversationArray: 
 	{messages}
 ![Imgur](http://i.imgur.com/7UDOEoB.png =100x20)
