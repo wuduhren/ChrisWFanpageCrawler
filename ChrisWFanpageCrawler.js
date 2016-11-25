@@ -15,7 +15,7 @@ function clickIteration(conversationStartingPoint, conversationEndingPoint, conv
 
 		setTimeout(function() {
 			clickIteration(conversationStartingPoint, conversationEndingPoint, conversationCellClickedAwaitedTimeInSecond)
-		}, 3000)
+		}, 3000) //ConversationScrollable scrolled. If conversationCell not yet load so cannot click, wait 3 second click again.
 
 	} else {
 
@@ -47,7 +47,7 @@ function conversationCrawled(){
 		conversation.push(messageCrawled(i))
 		i++
 	}
-	// console.log(JSON.stringify(conversation))
+	
 	return conversation
 }
 
