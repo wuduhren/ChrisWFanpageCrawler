@@ -43,10 +43,10 @@ Run`clickIteration(10, 50, 2.5)`
 
 In conversationJSON: 
 	{threadID:ConversationArray}
-![Imgur](http://i.imgur.com/XV9kI3I.png=100x20)
+![Imgur](http://i.imgur.com/XV9kI3I.png =100x20)
 In ConversationArray: 
 	{messages}
-![Imgur](http://i.imgur.com/7UDOEoB.png=100x20)
+![Imgur](http://i.imgur.com/7UDOEoB.png =100x20)
 <br>
 In messages:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;messageSender<br>
