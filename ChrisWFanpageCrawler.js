@@ -1,4 +1,4 @@
-var fanPageName = '知識王'
+var fanPageName = 'Your_Fanpage_Name'
 var conversationBlockScrollRepeat
 var conversationID = 1
 var conversationJSON = {}
