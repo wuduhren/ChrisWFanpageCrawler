@@ -254,4 +254,4 @@ function getAttribute(element, attribute){
 //---------------------------------------------------------------------------------------------
 
 // clickIteration(1, 10, 2)
-console.log(JSON.stringify(conversationJSON))
+// console.log(JSON.stringify(conversationJSON))
