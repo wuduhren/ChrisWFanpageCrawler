@@ -47,6 +47,7 @@ In conversationJSON:
 In ConversationArray: 
 	{messages}
 ![Imgur](http://i.imgur.com/7UDOEoB.png)
+<br>
 In messages:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;messageSender<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;messageContent<br>
