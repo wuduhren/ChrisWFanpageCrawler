@@ -201,7 +201,8 @@ function getHTMLData(){
 }
 
 function getUserFBID(){
-	var selector = "#u_0_b > div > div > div > div._10ua > table > tbody > tr > td._10ug._51mw._51m-.vTop > div > div > table > tbody > tr > td._2utc._51m-.vTop > div._3stw.clearfix > div._ohe.lfloat > div > div > a"
+
+	var selector = "#u_0_b > div > div > div > div._10ua > table > tbody > tr > td._51mw._51m-.vTop > div > div > table > tbody > tr > td._2utc._51m-.vTop > div._3stw.clearfix > div._ohe.lfloat > div > div > a"
 	var url = document.querySelector(selector).href
 	var key, value
 	var data = {}
