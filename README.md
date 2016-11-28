@@ -39,7 +39,7 @@ Run`clickIteration(10, 50, 2.5)`
 ![Imgur](http://i.imgur.com/Ry1lMlj.png)
 ![Imgur](http://i.imgur.com/SwhrNps.png)
 
-## Output
+## Output JSON
 
 In conversationJSON: 
 	{threadID:ConversationArray}
